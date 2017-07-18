@@ -12,6 +12,8 @@ class PaintView: UIView {
 
     var samplePoints = [CGPoint]()
     var drawImage: UIImage!
+    var offset = CGSize(width: 0, height: 0)
+    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         let touch = touches.first!
@@ -51,17 +53,18 @@ class PaintView: UIView {
         // Drawing code
         
         let context = UIGraphicsGetCurrentContext()
-        
+        context?.setShadow(offset: offset, blur: 6, color: UIColor.blue.cgColor)
         context?.setAllowsAntialiasing(true)
         context?.setShouldAntialias(true)
-        
         context?.setStrokeColor(UIColor.blue.cgColor)
+        context?.saveGState()
         
         let path = UIBezierPath()
         path.lineWidth = 20
         path.lineJoinStyle = .round
         path.lineCapStyle = .round
         
+
         drawImage?.draw(in: bounds)
         
         if samplePoints.count > 0{
@@ -75,6 +78,8 @@ class PaintView: UIView {
             
             path.addLine(to: samplePoints.last!)
             path.stroke()
+            
+            context?.restoreGState()
             
         }
         
